@@ -19,6 +19,7 @@
 #include <Engine/Managers/EntityManager/EntityManager.hpp>
 #include <Engine/Managers/SignalManager/SignalManager.hpp>
 #include <Engine/Renderer/Material/BlinnPhongMaterial.hpp>
+#include <Engine/Renderer/Material/RayMarchingMaterial.hpp>
 #include <Engine/Renderer/RenderObject/RenderObject.hpp>
 #include <Engine/Renderer/RenderObject/RenderObjectManager.hpp>
 #include <Engine/Renderer/RenderTechnique/ShaderProgramManager.hpp>
@@ -43,6 +44,8 @@ void RadiumEngine::initialize() {
     ComponentMessenger::createInstance();
     // Engine support some built-in materials. Register here
     BlinnPhongMaterial::registerMaterial();
+    RayMarchingMaterial::registerMaterial();
+
     m_loadingState = false;
 }
 

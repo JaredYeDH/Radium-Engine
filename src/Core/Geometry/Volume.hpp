@@ -146,7 +146,7 @@ class RA_CORE_API AbstractDiscreteVolume : public AbstractVolume {
         using Integer = typename IndexType::Scalar;
         if ( ( p.array() >= _size.array() ).any() )
             return {};
-        return p.dot( IndexType( Integer( 1 ), _size( 1 ), _size( 0 ) * _size( 1 ) ) );
+        return p.dot( IndexType( Integer( 1 ), _size( 0 ), _size( 0 ) * _size( 1 ) ) );
     }
     virtual Utils::optional<ValueType> getBinValue( typename IndexType::Scalar idx ) const = 0;
     virtual void addToBin( const ValueType& value, typename IndexType::Scalar idx ) = 0;
@@ -183,15 +183,15 @@ class RA_CORE_API VolumeGrid : public AbstractDiscreteVolume {
   protected:
     /// Get the function value a given position p
     inline Utils::optional<ValueType> getBinValue( typename IndexType::Scalar idx ) const override {
-        return _data[idx];
+        return _data[size_t( idx )];
     }
 
     inline void addToBin( const ValueType& value, typename IndexType::Scalar idx ) override {
-        _data[idx] += value;
+        _data[size_t( idx )] += value;
     }
 
     /// \warning This method needs to be updated in case we switch to multidimensionnal functions
-    inline void updateStorage() override { _data.resize( size().prod(), _defaultValue ); }
+    inline void updateStorage() override { _data.resize( size_t( size().prod() ), _defaultValue ); }
 
   private:
     const ValueType _defaultValue;

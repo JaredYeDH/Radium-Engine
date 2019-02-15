@@ -40,7 +40,10 @@ class RA_ENGINE_API VolumeObject : public Displayable {
     void loadGeometry( Core::Geometry::AbstractVolume* volume );
 
     /// Mark the data types as dirty, forcing an update of the openGL buffer.
-    inline void setDirty();
+    inline void setDirty() { m_isDirty = true; }
+
+    /// get read access to the 3d texture storing the data
+    const Texture& getDataTexture() { return m_tex; }
 
     /**
      * This function is called at the start of the rendering. It will update the

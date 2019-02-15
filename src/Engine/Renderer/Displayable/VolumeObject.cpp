@@ -30,15 +30,56 @@ void VolumeObject::loadGeometry( Core::Geometry::AbstractVolume* volume ) {
 
         m_mesh.loadGeometry( Core::Geometry::makeSharpBox( volume->computeAabb() ) );
 
+        // FIXME: assume a given vertex ordering for makeSharpBox. Should be moved in makeSharpBox,
+        // however there is currently no rational for the automatic conversion of texture
+        // coordinates between TriangleMesh and Mesh
+
+        /*
+        Vector3ui( 0, 1, 2 ),    Vector3ui( 0, 2, 3 ),    // Floor
+        Vector3ui( 4, 5, 6 ),    Vector3ui( 4, 6, 7 ),    // Ceil
+        Vector3ui( 8, 9, 10 ),   Vector3ui( 8, 10, 11 ),  // Left
+        Vector3ui( 12, 13, 14 ), Vector3ui( 12, 14, 15 ), // Right
+        Vector3ui( 16, 17, 18 ), Vector3ui( 16, 18, 19 ), // Bottom
+        Vector3ui( 20, 21, 22 ), Vector3ui( 20, 22, 23 )  // Top
+        */
+
+        Core::Vector3Array tex_coords;
+        tex_coords.resize( 24 );
+        tex_coords.getMap() <<
+            // R
+            Scalar( 1 ),
+            Scalar( 1 ), Scalar( 0 ), Scalar( 0 ),              // Bottom
+            Scalar( 1 ), Scalar( 0 ), Scalar( 0 ), Scalar( 1 ), // Top
+            Scalar( 1 ), Scalar( 1 ), Scalar( 1 ), Scalar( 1 ), // Right
+            Scalar( 0 ), Scalar( 0 ), Scalar( 0 ), Scalar( 0 ), // Left
+            Scalar( 1 ), Scalar( 0 ), Scalar( 0 ), Scalar( 1 ), // Floor
+            Scalar( 1 ), Scalar( 1 ), Scalar( 0 ), Scalar( 0 ), // Ceil
+            // G
+            Scalar( 0 ), Scalar( 1 ), Scalar( 1 ), Scalar( 0 ), // Bottom
+            Scalar( 0 ), Scalar( 0 ), Scalar( 1 ), Scalar( 1 ), // Top
+            Scalar( 1 ), Scalar( 0 ), Scalar( 0 ), Scalar( 1 ), // Right
+            Scalar( 0 ), Scalar( 1 ), Scalar( 1 ), Scalar( 0 ), // Left
+            Scalar( 0 ), Scalar( 0 ), Scalar( 0 ), Scalar( 0 ), // Floor
+            Scalar( 1 ), Scalar( 1 ), Scalar( 1 ), Scalar( 1 ), // Ceil
+            // B
+            Scalar( 0 ), Scalar( 0 ), Scalar( 0 ), Scalar( 0 ), // Bottom
+            Scalar( 1 ), Scalar( 1 ), Scalar( 1 ), Scalar( 1 ), // Top
+            Scalar( 0 ), Scalar( 0 ), Scalar( 1 ), Scalar( 1 ), // Right
+            Scalar( 0 ), Scalar( 0 ), Scalar( 1 ), Scalar( 1 ), // Left
+            Scalar( 0 ), Scalar( 0 ), Scalar( 1 ), Scalar( 1 ), // Floor
+            Scalar( 0 ), Scalar( 1 ), Scalar( 1 ), Scalar( 0 ); // Ceil
+
+        m_mesh.addData( Ra::Engine::Mesh::VERTEX_TEXCOORD, tex_coords );
+
         Core::Geometry::VolumeGrid* grid = static_cast<Core::Geometry::VolumeGrid*>( volume );
         m_volume = std::unique_ptr<Core::Geometry::AbstractVolume>( volume );
         m_tex.m_textureParameters.texels = const_cast<float*>( &( grid->data()[0] ) );
 
         auto dim = grid->size();
 
-        m_tex.m_textureParameters.width = dim( 0 );
-        m_tex.m_textureParameters.height = dim( 1 );
-        m_tex.m_textureParameters.depth = dim( 2 );
+        m_tex.m_textureParameters.width = size_t( dim( 0 ) );
+        m_tex.m_textureParameters.height = size_t( dim( 1 ) );
+        m_tex.m_textureParameters.depth = size_t( dim( 2 ) );
         m_isDirty = true;
     }
 }

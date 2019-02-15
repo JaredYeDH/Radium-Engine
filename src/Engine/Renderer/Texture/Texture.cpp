@@ -116,7 +116,6 @@ void Engine::Texture::updateData( void* data ) {
                                  GLsizei( m_textureParameters.width ),
                                  GLsizei( m_textureParameters.height ), 0,
                                  m_textureParameters.format, m_textureParameters.type, data );
-        GL_CHECK_ERROR
     }
     break;
     default:

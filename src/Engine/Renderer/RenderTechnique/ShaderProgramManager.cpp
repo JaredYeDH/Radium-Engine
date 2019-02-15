@@ -51,9 +51,14 @@ void ShaderProgramManager::initialize() {
     m_namedStrings.push_back(
         globjects::NamedString::create( "/BlinnPhongMaterial.glsl", m_files[5].get() ) );
 
+    m_files.push_back( globjects::File::create(
+        "Shaders/Materials/RayMarchingMaterial/RayMarchingMaterial.glsl" ) );
+    m_namedStrings.push_back(
+        globjects::NamedString::create( "/RayMarchingMaterial.glsl", m_files[6].get() ) );
+
     m_files.push_back( globjects::File::create( "Shaders/Lights/DefaultLight.glsl" ) );
     m_namedStrings.push_back(
-        globjects::NamedString::create( "/DefaultLight.glsl", m_files[6].get() ) );
+        globjects::NamedString::create( "/DefaultLight.glsl", m_files[7].get() ) );
 
     m_defaultShaderProgram =
         addShaderProgram( {{"Default Program"}, m_defaultVsName, m_defaultFsName} );

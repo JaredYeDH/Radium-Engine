@@ -74,10 +74,15 @@ void main(void) {
     for(int i = 0;
         i<1000;
         i++) {
-        value = texture(material.buffer, raypos).r;
+        float w = 1.;
+        value = textureLod(material.buffer, raypos, 0.).r;
+        for (int level = 1; level < 6; level++){
+            w = w / 8.;
+            value += w * textureLod(material.buffer, raypos, level).r;
+        }
         if ( value != 0. )
         {
-            accum += value;
+            accum += stepsize*value;
 //            frgColor += shade(raypos,value);
             hit = true;
         }
@@ -93,7 +98,7 @@ void main(void) {
     if ( ! hit ) discard;
 
 //    fragColor = frgColor;
-    fragColor = colormap ( clamp(accum/5., 0., 1.) );
+    fragColor = colormap ( clamp(10.*accum, 0., 1.) );
 
     out_normal = vec4(normalize(raydir), 1.0);
     out_diffuse = vec4(normalize(in_position), 1.0);

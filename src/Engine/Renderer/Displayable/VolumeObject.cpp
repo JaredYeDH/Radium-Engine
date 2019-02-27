@@ -5,6 +5,7 @@
 
 #include <Core/Geometry/MeshPrimitives.hpp>
 #include <Core/Types.hpp>
+#include <Core/Utils/Log.hpp>
 
 namespace Ra {
 namespace Engine {
@@ -20,6 +21,7 @@ VolumeObject::VolumeObject( const std::string& name ) :
     m_tex.m_textureParameters.format = GL_RED;
     m_tex.m_textureParameters.internalFormat = GL_RED;
     m_tex.m_textureParameters.type = GL_FLOAT;
+    m_tex.m_textureParameters.minFilter = GL_LINEAR_MIPMAP_LINEAR;
 }
 
 VolumeObject::~VolumeObject() {}

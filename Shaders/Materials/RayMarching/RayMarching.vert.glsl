@@ -15,7 +15,7 @@ uniform mat4 uLightSpace;
 
 layout (location = 0) out vec3 out_position;
 layout (location = 1) out vec3 out_texcoord;
-//layout (location = 2) out vec3 out_viewVector;
+layout (location = 2) out vec3 out_normal;
 layout (location = 3) out vec3 out_cameraInModelSpace;
 
 void main()
@@ -35,4 +35,5 @@ void main()
     out_texcoord.x         = 1.- out_texcoord.x;
     //out_viewVector         = normalize(vec3(eye - out_position));
     out_cameraInModelSpace = (inverse(transform.model) * vec4(eye,1.)).xyz;
+    out_normal = in_normal;
 }

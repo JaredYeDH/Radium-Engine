@@ -34,7 +34,8 @@ void RayMarchingMaterial::bind( const ShaderProgram* shader ) {
 }
 
 bool RayMarchingMaterial::isTransparent() const {
-    return false;
+    // return true if the material is to be used as transparent, false else.
+    return true;
 }
 
 void RayMarchingMaterial::registerMaterial() {
@@ -63,8 +64,10 @@ void RayMarchingMaterial::registerMaterial() {
             // compatible one Main pass (Mandatory) : RayMarching
             auto lightpassconfig =
                 Ra::Engine::ShaderConfigurationFactory::getConfiguration( "RayMarching" );
+            // set one of the following according to the way the material must be used (see RayMarching.frag.glsl)
+            rt.setConfiguration( lightpassconfig, Ra::Engine::RenderTechnique::LIGHTING_TRANSPARENT );
             //rt.setConfiguration( lightpassconfig, Ra::Engine::RenderTechnique::LIGHTING_OPAQUE );
-            rt.setConfiguration( lightpassconfig, Ra::Engine::RenderTechnique::Z_PREPASS );
+            //rt.setConfiguration( lightpassconfig, Ra::Engine::RenderTechnique::Z_PREPASS );
 
             //            // Z prepass (Recommended) : DepthAmbiantPass
             //            auto zprepassconfig =

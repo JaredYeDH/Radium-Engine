@@ -113,7 +113,23 @@ void VolumeObject::updateGL() {
 
 void VolumeObject::render() {
     GL_CHECK_ERROR;
+    // Cull faces
+
+    GLboolean cullEnable = glIsEnabled(GL_CULL_FACE);
+    int culledFaces;
+    glGetIntegerv(GL_CULL_FACE_MODE, &culledFaces);
+    int frontFaces;
+    glGetIntegerv(GL_FRONT_FACE, &frontFaces);
+    glFrontFace(GL_CCW);
+    glCullFace(GL_BACK);
+    glEnable(GL_CULL_FACE);
+
     m_mesh.render();
+
+    glCullFace(gl::GLenum(culledFaces));
+    glFrontFace(gl::GLenum(frontFaces));
+    if (!cullEnable)
+        glDisable(GL_CULL_FACE);
     GL_CHECK_ERROR;
 }
 

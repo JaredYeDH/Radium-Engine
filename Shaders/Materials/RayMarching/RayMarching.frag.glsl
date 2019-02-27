@@ -1,3 +1,8 @@
+// Set the foillowing according to the way the RayMarching Material is defined in RayMarchingMaterial.cpp
+#define USE_AS_TRANSPARENT
+//#define USE_AS_OPAQUE
+//#define USE_AS_PREPASS
+
 struct Material
 {
     sampler3D buffer;
@@ -5,16 +10,24 @@ struct Material
 
 uniform Material material;
 
+#ifdef USE_AS_TRANSPARENT
+layout (location = 0) out vec4 f_Accumulation;
+layout (location = 1) out vec4 f_Revealage;
+#endif
+#ifdef USE_AS_OPAQUE
+layout (location = 0) out vec4 fragColor;
+#endif
+#ifdef USE_AS_PREPASS
 layout (location = 0) out vec4 fragColor;
 // These are used for "traditional" depth prepass. Use it for debug here ...
 layout (location = 1) out vec4 out_normal;
 layout (location = 2) out vec4 out_diffuse;
 layout (location = 3) out vec4 out_specular;
-
+#endif
 
 layout (location = 0) in vec3 in_position;
 layout (location = 1) in vec3 in_texcoord;
-//layout (location = 2) in vec3 in_viewVector;
+layout (location = 2) in vec3 in_normal;
 layout (location = 3) in vec3 in_cameraInModelSpace;
 
 float stepsize = 0.01;
@@ -51,11 +64,6 @@ vec4 colormap(float x) {
     return vec4(r, g, b, 1.0);
 }
 
-vec4 shade(vec3 position, in float value) {
-//    if ( value > 1)
-//        return (vec4(0.1, 0., 0., 0.1));
-        return vec4(vec3(value), 1.0);
-}
 
 void main(void) {
 	float value;
@@ -71,37 +79,54 @@ void main(void) {
     raydir = normalize(raydir) * stepsize;
 
     float accum = 0.;
+    // only in OpenGL 4.3 ...
+    // int mipmapLevel = textureQueryLevels(material.buffer);
+
+    int mipmapLevel = 6;
+//    float currentMipMapLevel = textureQueryLod(material.buffer, in_texcoord).x;
+
     for(int i = 0;
         i<1000;
         i++) {
         float w = 1.;
         value = textureLod(material.buffer, raypos, 0.).r;
-        for (int level = 1; level < 6; level++){
-            w = w / 8.;
+        for (int level = 1; level < mipmapLevel; level++){
+            //w = w * 0.5;
+            w = w * (mipmapLevel - level)/mipmapLevel;
             value += w * textureLod(material.buffer, raypos, level).r;
         }
         if ( value != 0. )
         {
             accum += stepsize*value;
-//            frgColor += shade(raypos,value);
             hit = true;
         }
 
         raypos = raypos + raydir;
         if ( any(greaterThan(raypos, vec3(1.0))) ||
              any(lessThan(raypos, vec3(0.0))) ||
-             all(greaterThan(frgColor.xyz, vec3(1.0)))
+             accum >= 1
            )
            break;
     }
 
     if ( ! hit ) discard;
 
-//    fragColor = frgColor;
-    fragColor = colormap ( clamp(10.*accum, 0., 1.) );
 
-    out_normal = vec4(normalize(raydir), 1.0);
+#ifdef USE_AS_TRANSPARENT
+    f_Accumulation = colormap ( clamp(10.*accum, 0., 1.) ) * accum/stepsize;
+    f_Revealage = vec4(accum/stepsize);
+#endif
+
+#ifdef USE_AS_OPAQUE
+    fragColor = colormap ( clamp(10.*accum, 0., 1.) );
+    fragColor.a = accum;
+#endif
+
+#ifdef USE_AS_PREPASS
+    fragColor = colormap ( clamp(10.*accum, 0., 1.) );
+    out_normal = vec4(normalize(in_normal), 1.0);
     out_diffuse = vec4(normalize(in_position), 1.0);
     out_specular = vec4(raypos, 1.0);
+#endif
 
 }

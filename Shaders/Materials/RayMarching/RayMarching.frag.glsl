@@ -127,15 +127,20 @@ void main(void) {
     if ( ! hit ) discard;
 
     // replace the constant 10 by the expectation of the number of photons on the ray ?
-    float opacity = clamp(accum/10, 0, 1);
+    float opacity = clamp(accum/10, 0, 0.9);
 #ifdef USE_AS_TRANSPARENT
     float w  = weight(gl_FragCoord.z, opacity);
     f_Accumulation = colormap ( opacity  ) * opacity * w;
+    //f_Accumulation = vec4(vec3(opacity), 1);
     f_Revealage = vec4(opacity);
 #endif
 
 #ifdef USE_AS_OPAQUE
-    fragColor = colormap ( opacity );
+    float w  = weight(gl_FragCoord.z, opacity);
+    fragColor = colormap ( opacity  ) * opacity * w;
+    fragColor.a = opacity;
+
+//    fragColor = colormap ( opacity );
 //    fragColor.a = opacity;
 #endif
 

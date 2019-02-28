@@ -589,15 +589,26 @@ std::unique_ptr<uchar[]> Renderer::grabFrame( size_t& w, size_t& h ) const {
             auto ou = 4 * ( ( tex->height() - 1 - j ) * tex->width() +
                             i ); // Index in the final image (note the j flipping).
 
-            writtenPixels[ou + 0] =
-                uchar(std::clamp( int(pixels[in + 0] * 255.f) , 0, 255 ));
-            writtenPixels[ou + 1] =
-                uchar(std::clamp( int(pixels[in + 1] * 255.f) , 0, 255 ));
-            writtenPixels[ou + 2] =
-                uchar(std::clamp( int(pixels[in + 2] * 255.f) , 0, 255 ));
-            writtenPixels[ou + 3] =
-                uchar(std::clamp( int(pixels[in + 3] * 255.f) , 0, 255 ));
+            float r = pixels[in + 0];
+            float g = pixels[in + 1];
+            float b = pixels[in + 2];
+            float a = pixels[in + 3];
+            if (a!=0.0) {
+                r/=a;
+                g/=a;
+                b/=a;
+            } else {
+                r=g=b=0;
+            }
 
+            writtenPixels[ou + 0] =
+                uchar(std::clamp( int(r*255) , 0, 255 ));
+            writtenPixels[ou + 1] =
+                uchar(std::clamp( int(g*255) , 0, 255 ));
+            writtenPixels[ou + 2] =
+                uchar(std::clamp( int(b*255) , 0, 255 ));
+            writtenPixels[ou + 3] =
+                uchar(std::clamp( int(a*255) , 0, 255 ));
         }
     }
     w = tex->width();

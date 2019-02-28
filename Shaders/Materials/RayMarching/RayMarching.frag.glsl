@@ -32,6 +32,22 @@ layout (location = 3) in vec3 in_cameraInModelSpace;
 
 float stepsize = 0.01;
 
+float weight(float z, float alpha) {
+
+     // pow(alpha, colorResistance) : increase colorResistance if foreground transparent are affecting background transparent color
+     // clamp(adjust / f(z), min, max) :
+     //     adjust : Range adjustment to avoid saturating at the clamp bounds
+     //     clamp bounds : to be tuned to avoid over or underflow of the reveleage texture.
+     // f(z) = 1e-5 + pow(z/depthRange, orederingStrength)
+     //     defRange : Depth range over which significant ordering discrimination is required. Here, 10 camera space units.
+     //         Decrease if high-opacity surfaces seem “too transparent”,
+     //         increase if distant transparents are blending together too much.
+     //     orderingStrength : Ordering strength. Increase if background is showing through foreground too much.
+     // 1e-5 + ... : avoid dividing by zero !
+
+     return pow(alpha, 0.5) * clamp(10 / ( 1e-5 + pow(z/10, 6)  ), 1e-2, 3*1e3);
+ }
+
 // source: https://github.com/kbinani/colormap-shaders/blob/master/shaders/glsl/MATLAB_jet.frag
 float colormap_red(float x) {
     if (x < 0.7) {
@@ -97,33 +113,34 @@ void main(void) {
         }
         if ( value != 0. )
         {
-            accum += stepsize*value;
+            accum += value;
             hit = true;
         }
 
         raypos = raypos + raydir;
         if ( any(greaterThan(raypos, vec3(1.0))) ||
-             any(lessThan(raypos, vec3(0.0))) ||
-             accum >= 1
+             any(lessThan(raypos, vec3(0.0)))
            )
            break;
     }
 
     if ( ! hit ) discard;
 
-
+    // replace the constant 10 by the expectation of the number of photons on the ray ?
+    float opacity = clamp(accum/10, 0, 1);
 #ifdef USE_AS_TRANSPARENT
-    f_Accumulation = colormap ( clamp(10.*accum, 0., 1.) ) * accum/stepsize;
-    f_Revealage = vec4(accum/stepsize);
+    float w  = weight(gl_FragCoord.z, opacity);
+    f_Accumulation = colormap ( opacity  ) * opacity * w;
+    f_Revealage = vec4(opacity);
 #endif
 
 #ifdef USE_AS_OPAQUE
-    fragColor = colormap ( clamp(10.*accum, 0., 1.) );
-    fragColor.a = accum;
+    fragColor = colormap ( opacity );
+//    fragColor.a = opacity;
 #endif
 
 #ifdef USE_AS_PREPASS
-    fragColor = colormap ( clamp(10.*accum, 0., 1.) );
+    fragColor = colormap ( opacity );
     out_normal = vec4(normalize(in_normal), 1.0);
     out_diffuse = vec4(normalize(in_position), 1.0);
     out_specular = vec4(raypos, 1.0);

@@ -50,7 +50,7 @@ void main()
     vec3 contribution   = lightContributionFrom(light, in_position);
 
     float w             = weight(gl_FragCoord.z, a);
-    f_Accumulation     = vec4(materialColor * contribution * a , a) * w;
+    f_Accumulation     = vec4(materialColor * contribution , 1) * a * w;
     f_Revealage        = vec4(a);
 
 }

@@ -235,6 +235,11 @@ class RA_ENGINE_API Renderer {
     /// Tell if the renderer has an usable light.
     bool hasLight() const;
 
+    /// Update the background color (does not trigger a redraw)
+    inline void setBackgroundColor( const Core::Utils::Color& color ) { m_backgroundColor = color; }
+
+    inline const Core::Utils::Color& getBackgroundColor() const { return m_backgroundColor; }
+
     // -=-=-=-=-=-=-=-=- VIRTUAL -=-=-=-=-=-=-=-=- //
     /** Add a light to the renderer.
      * may be overridden to filter the light or to specialize the way ligths are added to the
@@ -417,6 +422,9 @@ class RA_ENGINE_API Renderer {
     std::vector<PickingQuery> m_pickingQueries;
     std::vector<PickingQuery> m_lastFramePickingQueries;
     std::vector<PickingResult> m_pickingResults;
+
+    Core::Utils::Color m_backgroundColor{
+        Core::Utils::Color::Grey( Scalar( 0.0392 ), Scalar( 0. ) )};
 };
 
 } // namespace Engine

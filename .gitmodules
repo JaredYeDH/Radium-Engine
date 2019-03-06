@@ -22,3 +22,6 @@
 [submodule "3rdPartyLibraries/stb"]
 	path = 3rdPartyLibraries/stb
 	url = https://github.com/nothings/stb.git
+[submodule "3rdPartyLibraries/OpenGL/colormap-shaders"]
+	path = 3rdPartyLibraries/OpenGL/colormap-shaders
+	url = https://github.com/kbinani/colormap-shaders.git

@@ -71,6 +71,12 @@ class RA_ENGINE_API RayMarchingMaterial final : public Material {
     static void unregisterMaterial();
 
   public:
+    Scalar m_maxValuePerRay{30.};
+    Scalar m_stepSize{0.01};
+    Scalar m_valuePowCorrection{10.};
+    Scalar m_realOpacityFactor{1.5};
+    Scalar m_xCoordFactor{4.5};
+
   private:
     Texture* m_texture;
 };

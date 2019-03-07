@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>478</width>
-    <height>189</height>
+    <width>530</width>
+    <height>430</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -20,26 +20,6 @@
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
-   <item row="2" column="1">
-    <widget class="QPushButton" name="m_closeButton">
-     <property name="text">
-      <string>Close</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0">
-    <spacer name="horizontalSpacer">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>40</width>
-       <height>20</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
    <item row="1" column="0" colspan="2">
     <widget class="QGroupBox" name="m_BlinnPhongGroup">
      <property name="title">
@@ -76,6 +56,9 @@
         <property name="text">
          <string>Diffuse Color</string>
         </property>
+        <property name="buddy">
+         <cstring>kdR</cstring>
+        </property>
        </widget>
       </item>
       <item row="1" column="1">
@@ -108,6 +91,9 @@
         <property name="text">
          <string>Specular color</string>
         </property>
+        <property name="buddy">
+         <cstring>ksR</cstring>
+        </property>
        </widget>
       </item>
       <item row="0" column="2">
@@ -120,6 +106,9 @@
        <widget class="QLabel" name="label_4">
         <property name="text">
          <string>Shininess</string>
+        </property>
+        <property name="buddy">
+         <cstring>exp</cstring>
         </property>
        </widget>
       </item>
@@ -145,6 +134,19 @@
      </layout>
     </widget>
    </item>
+   <item row="3" column="0">
+    <spacer name="horizontalSpacer">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>40</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
    <item row="0" column="0" colspan="2">
     <widget class="QLabel" name="m_renderObjectName">
      <property name="text">
@@ -153,6 +155,92 @@
      <property name="alignment">
       <set>Qt::AlignCenter</set>
      </property>
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <widget class="QPushButton" name="m_closeButton">
+     <property name="text">
+      <string>Close</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0" colspan="2">
+    <widget class="QGroupBox" name="m_RayMarchingGroup">
+     <property name="title">
+      <string>Material Parameters</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_3">
+      <item row="2" column="1">
+       <widget class="QDoubleSpinBox" name="m_raymarching_opacityFactor"/>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_5">
+        <property name="text">
+         <string>Value Power Correction Factor</string>
+        </property>
+        <property name="buddy">
+         <cstring>m_raymarching_powfactor</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_7">
+        <property name="text">
+         <string>Real Opacity Factor</string>
+        </property>
+        <property name="buddy">
+         <cstring>m_raymarching_opacityFactor</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QDoubleSpinBox" name="m_raymarching_stepsize">
+        <property name="decimals">
+         <number>4</number>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_6">
+        <property name="text">
+         <string>Marching Step Size</string>
+        </property>
+        <property name="buddy">
+         <cstring>m_raymarching_stepsize</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QDoubleSpinBox" name="m_raymarching_maxvalueray">
+        <property name="maximum">
+         <double>10000.000000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>Max Value/Ray</string>
+        </property>
+        <property name="buddy">
+         <cstring>m_raymarching_maxvalueray</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QDoubleSpinBox" name="m_raymarching_powfactor"/>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="label_8">
+        <property name="text">
+         <string>X-Coord Correction Factor</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QDoubleSpinBox" name="m_raymarching_xCoordFactor"/>
+      </item>
+     </layout>
     </widget>
    </item>
   </layout>
@@ -165,6 +253,20 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>kdR</tabstop>
+  <tabstop>kdG</tabstop>
+  <tabstop>kdB</tabstop>
+  <tabstop>ksR</tabstop>
+  <tabstop>ksG</tabstop>
+  <tabstop>ksB</tabstop>
+  <tabstop>exp</tabstop>
+  <tabstop>m_raymarching_maxvalueray</tabstop>
+  <tabstop>m_raymarching_powfactor</tabstop>
+  <tabstop>m_raymarching_opacityFactor</tabstop>
+  <tabstop>m_raymarching_stepsize</tabstop>
+  <tabstop>m_closeButton</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

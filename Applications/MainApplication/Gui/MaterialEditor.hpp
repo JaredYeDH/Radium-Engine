@@ -20,6 +20,7 @@ class RenderObjectManager;
 class RenderObject;
 class Material;
 class BlinnPhongMaterial;
+class RayMarchingMaterial;
 } // namespace Engine
 } // namespace Ra
 
@@ -35,6 +36,7 @@ class MaterialEditor : public QWidget, private Ui::MaterialEditor {
 
   private slots:
     void updateBlinnPhongViz();
+    void updateRayMarchingViz();
 
     void onKdColorChanged( int );
     void onKsColorChanged( int );
@@ -45,6 +47,16 @@ class MaterialEditor : public QWidget, private Ui::MaterialEditor {
     void newKsColor( const QColor& color );
 
     void on_m_closeButton_clicked();
+
+    void on_m_raymarching_maxvalueray_valueChanged( double arg1 );
+
+    void on_m_raymarching_powfactor_valueChanged( double arg1 );
+
+    void on_m_raymarching_opacityFactor_valueChanged( double arg1 );
+
+    void on_m_raymarching_stepsize_valueChanged( double arg1 );
+
+    void on_m_raymarching_xCoordFactor_valueChanged( double arg1 );
 
   protected:
     virtual void showEvent( QShowEvent* e ) override;
@@ -59,6 +71,7 @@ class MaterialEditor : public QWidget, private Ui::MaterialEditor {
     /// TODO generalize material editor to others materials
     bool m_usable;
     Ra::Engine::BlinnPhongMaterial* m_blinnphongmaterial;
+    Ra::Engine::RayMarchingMaterial* m_raymarchingmaterial;
 
   private:
     enum {

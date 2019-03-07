@@ -6,6 +6,11 @@
 struct Material
 {
     sampler3D buffer;
+    float maxValuePerRay;
+    float valuePowCorrection;
+    float stepsize;
+    float realOpacityFactor;
+    float xCoordFactor;
 };
 
 uniform Material material;
@@ -29,8 +34,6 @@ layout (location = 0) in vec3 in_position;
 layout (location = 1) in vec3 in_texcoord;
 layout (location = 2) in vec3 in_normal;
 layout (location = 3) in vec3 in_cameraInModelSpace;
-
-float stepsize = 0.01;
 
 float weight(float z, float alpha) {
 
@@ -487,8 +490,8 @@ void main(void) {
 	vec3 raypos = in_texcoord;//in_position;
     vec3 camera = in_cameraInModelSpace;
     vec3 raydir =in_position - camera;
-    raydir.x /= 4.5;
-    raydir = normalize(raydir) * stepsize;
+    raydir.x /= material.xCoordFactor;
+    raydir = normalize(raydir) * material.stepsize;
 
     float accum = 0.;
     vec4 accumColor= vec4(0.);
@@ -525,11 +528,11 @@ void main(void) {
     if ( ! hit ) discard;
 
     // replace the constant 10 by the expectation of the number of photons on the ray ?
-    float opacity = clamp(accum/30., 0., 0.9);
-    opacity = 1.- (pow(1.-opacity, 10.));
+    float opacity = clamp(accum/material.maxValuePerRay, 0., 0.999);
+    opacity = 1.- (pow(1.-opacity, material.valuePowCorrection));
 #ifdef USE_AS_TRANSPARENT
     float w  = weight(gl_FragCoord.z, opacity);
-    float realOpacity = 1.5*opacity;
+    float realOpacity = material.realOpacityFactor*opacity;
     f_Accumulation = colormap ( opacity  ) * realOpacity;
 //    f_Accumulation = vec4(clamp(accumColor,0.,1.).xyz, 1.) * opacity * w;
     //f_Accumulation = vec4(vec3(opacity), 1);

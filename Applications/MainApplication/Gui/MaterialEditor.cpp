@@ -2,6 +2,7 @@
 
 #include <Engine/RadiumEngine.hpp>
 #include <Engine/Renderer/Material/BlinnPhongMaterial.hpp>
+#include <Engine/Renderer/Material/RayMarchingMaterial.hpp>
 #include <Engine/Renderer/RenderObject/RenderObject.hpp>
 #include <Engine/Renderer/RenderObject/RenderObjectManager.hpp>
 #include <Engine/Renderer/RenderTechnique/RenderTechnique.hpp>
@@ -123,23 +124,31 @@ void MaterialEditor::changeRenderObject( Core::Utils::Index roIdx ) {
 
         if ( m_renderObject != nullptr )
         {
-            Ra::Engine::BlinnPhongMaterial* mat = nullptr;
+            bool converted = false;
+
+            m_BlinnPhongGroup->hide();
+            m_RayMarchingGroup->hide();
 
             auto genericMaterial = m_renderObject->getRenderTechnique()->getMaterial();
             if ( genericMaterial->getMaterialName() == "BlinnPhong" )
             {
-                mat = dynamic_cast<Ra::Engine::BlinnPhongMaterial*>( genericMaterial.get() );
-                m_blinnphongmaterial = mat;
+                m_blinnphongmaterial =
+                    dynamic_cast<Ra::Engine::BlinnPhongMaterial*>( genericMaterial.get() );
                 updateBlinnPhongViz();
                 m_BlinnPhongGroup->show();
+            } else if ( genericMaterial->getMaterialName() == "RayMarching" )
+            {
+                m_raymarchingmaterial =
+                    dynamic_cast<Ra::Engine::RayMarchingMaterial*>( genericMaterial.get() );
+                updateRayMarchingViz();
+                m_RayMarchingGroup->show();
             }
 
-            if ( mat == nullptr )
+            if ( converted )
             {
                 m_usable = false;
                 m_renderObject = nullptr;
                 m_blinnphongmaterial = nullptr;
-                m_BlinnPhongGroup->hide();
                 return;
             }
 
@@ -185,9 +194,37 @@ void MaterialEditor::updateBlinnPhongViz() {
     ksColorWidget->colorChanged( ksr, ksg, ksb );
 }
 
+void MaterialEditor::updateRayMarchingViz() {
+    m_raymarching_stepsize->setValue( double( m_raymarchingmaterial->m_stepSize ) );
+    m_raymarching_powfactor->setValue( double( m_raymarchingmaterial->m_valuePowCorrection ) );
+    m_raymarching_maxvalueray->setValue( double( m_raymarchingmaterial->m_maxValuePerRay ) );
+    m_raymarching_opacityFactor->setValue( double( m_raymarchingmaterial->m_realOpacityFactor ) );
+    m_raymarching_xCoordFactor->setValue( double( m_raymarchingmaterial->m_xCoordFactor ) );
+}
+
 } // namespace Gui
 } // namespace Ra
 
 void Ra::Gui::MaterialEditor::on_m_closeButton_clicked() {
     hide();
+}
+
+void Ra::Gui::MaterialEditor::on_m_raymarching_maxvalueray_valueChanged( double arg1 ) {
+    m_raymarchingmaterial->m_maxValuePerRay = Scalar( arg1 );
+}
+
+void Ra::Gui::MaterialEditor::on_m_raymarching_powfactor_valueChanged( double arg1 ) {
+    m_raymarchingmaterial->m_valuePowCorrection = Scalar( arg1 );
+}
+
+void Ra::Gui::MaterialEditor::on_m_raymarching_opacityFactor_valueChanged( double arg1 ) {
+    m_raymarchingmaterial->m_realOpacityFactor = Scalar( arg1 );
+}
+
+void Ra::Gui::MaterialEditor::on_m_raymarching_stepsize_valueChanged( double arg1 ) {
+    m_raymarchingmaterial->m_stepSize = Scalar( arg1 );
+}
+
+void Ra::Gui::MaterialEditor::on_m_raymarching_xCoordFactor_valueChanged( double arg1 ) {
+    m_raymarchingmaterial->m_xCoordFactor = Scalar( arg1 );
 }

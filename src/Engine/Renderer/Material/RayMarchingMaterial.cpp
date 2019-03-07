@@ -28,6 +28,11 @@ void RayMarchingMaterial::updateGL() {
 
 void RayMarchingMaterial::bind( const ShaderProgram* shader ) {
 
+    shader->setUniform( "material.maxValuePerRay", m_maxValuePerRay );
+    shader->setUniform( "material.valuePowCorrection", m_valuePowCorrection );
+    shader->setUniform( "material.realOpacityFactor", m_realOpacityFactor );
+    shader->setUniform( "material.stepsize", m_stepSize );
+    shader->setUniform( "material.xCoordFactor", m_xCoordFactor );
     shader->setUniformTexture( "material.buffer", m_texture );
 }
 

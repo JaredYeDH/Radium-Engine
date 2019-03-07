@@ -39,13 +39,6 @@ class RA_ENGINE_API RayMarchingMaterial final : public Material {
      */
     ~RayMarchingMaterial() override;
 
-    /**
-     * Get the basename of the glsl source file to include if one want to build composite shaders
-     * that use this material.
-     * @return The basename (without extension .frag.glsl or .vert.glsl) of the glsl source file.
-     */
-    const std::string getShaderInclude() const override;
-
     void updateGL() override;
     void bind( const ShaderProgram* shader ) override;
     bool isTransparent() const override;

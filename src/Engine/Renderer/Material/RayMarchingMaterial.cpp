@@ -10,8 +10,10 @@
 namespace Ra {
 namespace Engine {
 
+static const std::string materialName{"RayMarching"};
+
 RayMarchingMaterial::RayMarchingMaterial( const std::string& name ) :
-    Material( name, Material::MaterialAspect::MAT_OPAQUE ) {}
+    Material( name, materialName, Material::MaterialAspect::MAT_OPAQUE ) {}
 
 RayMarchingMaterial::~RayMarchingMaterial() {}
 
@@ -22,10 +24,6 @@ void RayMarchingMaterial::updateGL() {
     }
 
     m_isDirty = false;
-}
-
-const std::string RayMarchingMaterial::getShaderInclude() const {
-    return "RayMarching";
 }
 
 void RayMarchingMaterial::bind( const ShaderProgram* shader ) {
@@ -59,15 +57,17 @@ void RayMarchingMaterial::registerMaterial() {
     Ra::Engine::EngineRenderTechniques::registerDefaultTechnique(
         "RayMarching",
 
-        []( Ra::Engine::RenderTechnique& rt, bool isTransparent ) {
+        []( Ra::Engine::RenderTechnique& rt, bool /*isTransparent*/ ) {
             // Configure the technique to render this object using forward Renderer or any
             // compatible one Main pass (Mandatory) : RayMarching
             auto lightpassconfig =
-                Ra::Engine::ShaderConfigurationFactory::getConfiguration( "RayMarching" );
-            // set one of the following according to the way the material must be used (see RayMarching.frag.glsl)
-            rt.setConfiguration( lightpassconfig, Ra::Engine::RenderTechnique::LIGHTING_TRANSPARENT );
-            //rt.setConfiguration( lightpassconfig, Ra::Engine::RenderTechnique::LIGHTING_OPAQUE );
-            //rt.setConfiguration( lightpassconfig, Ra::Engine::RenderTechnique::Z_PREPASS );
+                Ra::Engine::ShaderConfigurationFactory::getConfiguration( materialName );
+            // set one of the following according to the way the material must be used (see
+            // RayMarching.frag.glsl)
+            rt.setConfiguration( lightpassconfig,
+                                 Ra::Engine::RenderTechnique::LIGHTING_TRANSPARENT );
+            // rt.setConfiguration( lightpassconfig, Ra::Engine::RenderTechnique::LIGHTING_OPAQUE );
+            // rt.setConfiguration( lightpassconfig, Ra::Engine::RenderTechnique::Z_PREPASS );
 
             //            // Z prepass (Recommended) : DepthAmbiantPass
             //            auto zprepassconfig =
@@ -89,8 +89,8 @@ void RayMarchingMaterial::registerMaterial() {
 }
 
 void RayMarchingMaterial::unregisterMaterial() {
-    EngineMaterialConverters::removeMaterialConverter( "RayMarching" );
-    EngineRenderTechniques::removeDefaultTechnique( "RayMarching" );
+    EngineMaterialConverters::removeMaterialConverter( materialName );
+    EngineRenderTechniques::removeDefaultTechnique( materialName );
 }
 
 } // namespace Engine

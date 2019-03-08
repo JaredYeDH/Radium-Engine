@@ -488,6 +488,30 @@ void main(void) {
 
 	// le rayon
 	vec3 raypos = in_texcoord;//in_position;
+
+    // draw volume limits
+    float threshold = 0.005;
+    vec3 normalizedRayPos = raypos /* * material.uvNormalizationFactor */;
+    if(
+        all(greaterThan(normalizedRayPos.xy, vec2(1.-threshold))) ||
+        all(lessThan(normalizedRayPos.xy, vec2(threshold))) ||
+        (normalizedRayPos.x > 1.-threshold && normalizedRayPos.y < threshold) ||
+        (normalizedRayPos.y > 1.-threshold && normalizedRayPos.x < threshold) ||
+        all(greaterThan(normalizedRayPos.xz, vec2(1.-threshold))) ||
+        all(lessThan(normalizedRayPos.xz, vec2(threshold))) ||
+        (normalizedRayPos.x > 1.-threshold && normalizedRayPos.z < threshold) ||
+        (normalizedRayPos.z > 1.-threshold && normalizedRayPos.x < threshold) ||
+        all(greaterThan(normalizedRayPos.yz, vec2(1.-threshold))) ||
+        all(lessThan(normalizedRayPos.yz, vec2(threshold))) ||
+        (normalizedRayPos.y > 1.-threshold && normalizedRayPos.z < threshold) ||
+        (normalizedRayPos.z > 1.-threshold && normalizedRayPos.y < threshold)
+        )
+    {
+    f_Accumulation = vec4(0.,0.,0., 1.);
+    f_Revealage.a = 1.;
+    return;
+    }
+
     vec3 camera = in_cameraInModelSpace;
     vec3 raydir =in_position - camera;
     raydir /= material.uvNormalizationFactor;

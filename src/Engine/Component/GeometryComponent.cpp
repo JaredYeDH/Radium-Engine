@@ -123,6 +123,7 @@ void TriangleMeshComponent::generateTriangleMesh( const Ra::Core::Asset::Geometr
     RenderTechnique rt;
 
     bool isTransparent{false};
+
     if ( data->hasMaterial() )
     {
         const Ra::Core::Asset::MaterialData& loadedMaterial = data->getMaterial();
@@ -151,6 +152,22 @@ void TriangleMeshComponent::generateTriangleMesh( const Ra::Core::Asset::Geometr
         rt.setMaterial( mat );
         auto builder = EngineRenderTechniques::getDefaultTechnique( "BlinnPhong" );
         builder.second( rt, isTransparent );
+    }
+
+    if ( faces.empty() ) // add geometry shader for splatting
+    {
+        auto addGeomShader = [&rt]( RenderTechnique::PassName pass ) {
+            if ( rt.hasConfiguration( pass ) )
+            {
+                ShaderConfiguration config = rt.getConfiguration( pass );
+                config.addShader( ShaderType_GEOMETRY, "Shaders/PointCloud.geom.glsl" );
+                rt.setConfiguration( config, pass );
+            }
+        };
+
+        addGeomShader( RenderTechnique::LIGHTING_OPAQUE );
+        addGeomShader( RenderTechnique::LIGHTING_TRANSPARENT );
+        addGeomShader( RenderTechnique::Z_PREPASS );
     }
 
     auto ro = RenderObject::createRenderObject( roName, this, RenderObjectType::Geometry,

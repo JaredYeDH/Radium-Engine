@@ -32,7 +32,7 @@ void RayMarchingMaterial::bind( const ShaderProgram* shader ) {
     shader->setUniform( "material.valuePowCorrection", m_valuePowCorrection );
     shader->setUniform( "material.realOpacityFactor", m_realOpacityFactor );
     shader->setUniform( "material.stepsize", m_stepSize );
-    shader->setUniform( "material.xCoordFactor", m_xCoordFactor );
+    shader->setUniform( "material.uvNormalizationFactor", m_uvNormalizationFactor );
     shader->setUniformTexture( "material.buffer", m_texture );
 }
 

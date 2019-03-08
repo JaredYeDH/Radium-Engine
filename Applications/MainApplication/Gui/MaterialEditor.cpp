@@ -199,7 +199,12 @@ void MaterialEditor::updateRayMarchingViz() {
     m_raymarching_powfactor->setValue( double( m_raymarchingmaterial->m_valuePowCorrection ) );
     m_raymarching_maxvalueray->setValue( double( m_raymarchingmaterial->m_maxValuePerRay ) );
     m_raymarching_opacityFactor->setValue( double( m_raymarchingmaterial->m_realOpacityFactor ) );
-    m_raymarching_xCoordFactor->setValue( double( m_raymarchingmaterial->m_xCoordFactor ) );
+    m_raymarching_xcorrectionFactor->setValue(
+        double( m_raymarchingmaterial->m_uvNormalizationFactor.x() ) );
+    m_raymarching_ycorrectionFactor->setValue(
+        double( m_raymarchingmaterial->m_uvNormalizationFactor.y() ) );
+    m_raymarching_zcorrectionFactor->setValue(
+        double( m_raymarchingmaterial->m_uvNormalizationFactor.z() ) );
 }
 
 } // namespace Gui
@@ -223,8 +228,4 @@ void Ra::Gui::MaterialEditor::on_m_raymarching_opacityFactor_valueChanged( doubl
 
 void Ra::Gui::MaterialEditor::on_m_raymarching_stepsize_valueChanged( double arg1 ) {
     m_raymarchingmaterial->m_stepSize = Scalar( arg1 );
-}
-
-void Ra::Gui::MaterialEditor::on_m_raymarching_xCoordFactor_valueChanged( double arg1 ) {
-    m_raymarchingmaterial->m_xCoordFactor = Scalar( arg1 );
 }

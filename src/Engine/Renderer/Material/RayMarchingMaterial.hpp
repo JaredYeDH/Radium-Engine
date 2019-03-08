@@ -75,7 +75,7 @@ class RA_ENGINE_API RayMarchingMaterial final : public Material {
     Scalar m_stepSize{0.01};
     Scalar m_valuePowCorrection{10.};
     Scalar m_realOpacityFactor{1.5};
-    Scalar m_xCoordFactor{4.5};
+    Core::Vector3 m_uvNormalizationFactor{Core::Vector3::Ones()};
 
   private:
     Texture* m_texture;

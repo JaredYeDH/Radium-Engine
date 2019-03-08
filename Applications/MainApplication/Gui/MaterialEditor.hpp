@@ -56,8 +56,6 @@ class MaterialEditor : public QWidget, private Ui::MaterialEditor {
 
     void on_m_raymarching_stepsize_valueChanged( double arg1 );
 
-    void on_m_raymarching_xCoordFactor_valueChanged( double arg1 );
-
   protected:
     virtual void showEvent( QShowEvent* e ) override;
     virtual void closeEvent( QCloseEvent* e ) override;

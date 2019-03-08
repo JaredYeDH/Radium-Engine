@@ -10,7 +10,7 @@ struct Material
     float valuePowCorrection;
     float stepsize;
     float realOpacityFactor;
-    float xCoordFactor;
+    vec3 uvNormalizationFactor;
 };
 
 uniform Material material;
@@ -490,7 +490,7 @@ void main(void) {
 	vec3 raypos = in_texcoord;//in_position;
     vec3 camera = in_cameraInModelSpace;
     vec3 raydir =in_position - camera;
-    raydir.x /= material.xCoordFactor;
+    raydir /= material.uvNormalizationFactor;
     raydir = normalize(raydir) * material.stepsize;
 
     float accum = 0.;

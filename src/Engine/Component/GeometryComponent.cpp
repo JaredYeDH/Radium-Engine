@@ -282,12 +282,16 @@ void VolumeComponent::generateVolumeRender( const Ra::Core::Asset::VolumeData* d
     // The technique for rendering this component
     RenderTechnique rt;
 
-
     auto mat = Ra::Core::make_shared<RayMarchingMaterial>( data->getName() + "_DefaultBPMaterial" );
     mat->setTexture( const_cast<Texture*>( &( _displayVolume->getDataTexture() ) ) );
+    // compute uv coordinates normalization factor
+    {
+        Core::Vector3 s = _displayVolume->getVolume().computeAabb().sizes();
+        mat->m_uvNormalizationFactor = s / s.minCoeff();
+    }
     rt.setMaterial( mat );
     // Do not set the material transparent if it is not ... ask wether material is transparent.
-    bool isTransparent{ mat->isTransparent() };
+    bool isTransparent{mat->isTransparent()};
     auto builder = EngineRenderTechniques::getDefaultTechnique( "RayMarching" );
     builder.second( rt, isTransparent );
 
